@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portofolio Abi Muhammad</title>
+    <title>Portofolio Abi Muhammad | SMAN 1 Pasir Sakti</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
@@ -133,63 +133,74 @@
         .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
         .back-to-top:hover { background: var(--accent-light); transform: translateY(-4px); }
 
-        /* === SOUND SYSTEM / AUDIO TOGGLE FLOATING WIDGET (POJOK KIRI BAWAH) === */
+        /* === SOUND SYSTEM / AUDIO TOGGLE FLOATING WIDGET DENGAN EQUALIZER BERGERAK === */
         .sound-widget {
             position: fixed; bottom: 25px; left: 25px; z-index: 999;
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 12px;
             background: var(--glass-bg);
             border: 1px solid var(--neon-border); border-radius: 50px;
-            padding: 7px 14px 7px 9px;
+            padding: 8px 18px 8px 10px;
             box-shadow: var(--glow-sm);
             transition: all 0.3s ease;
         }
+        .sound-widget:hover {
+            border-color: var(--accent-light);
+            box-shadow: var(--glow-md);
+        }
         .sound-toggle-btn {
-            width: 36px; height: 36px; border-radius: 50%;
+            width: 38px; height: 38px; border-radius: 50%;
             background: var(--accent-color); color: #fff; border: none;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.9rem; cursor: none;
+            font-size: 0.95rem; cursor: none;
             transition: all 0.3s ease;
+            box-shadow: var(--glow-sm);
         }
         .sound-toggle-btn.playing {
             background: #22c55e;
-            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+            box-shadow: 0 0 14px rgba(34, 197, 94, 0.7);
         }
+        /* Indikator Equalizer Bar Bergerak */
         .equalizer {
-            display: flex; align-items: flex-end; gap: 3px; height: 16px;
+            display: flex; align-items: flex-end; gap: 3.5px; height: 20px;
+            padding: 2px 0;
         }
         .eq-bar {
-            width: 3px; height: 4px; background: var(--accent-light);
-            border-radius: 2px;
+            width: 3.5px; height: 5px;
+            background: linear-gradient(to top, var(--accent-color), var(--accent-light));
+            border-radius: 3px;
+            transition: height 0.2s ease;
         }
-        .sound-widget.active .eq-bar:nth-child(1) { animation: eqAnim 0.6s infinite ease-in-out 0.1s; }
-        .sound-widget.active .eq-bar:nth-child(2) { animation: eqAnim 0.5s infinite ease-in-out 0.25s; }
-        .sound-widget.active .eq-bar:nth-child(3) { animation: eqAnim 0.7s infinite ease-in-out 0.15s; }
-        @keyframes eqAnim {
-            0%, 100% { height: 4px; }
-            50% { height: 16px; }
+        .sound-widget.active .eq-bar:nth-child(1) { animation: eqMove 0.55s infinite ease-in-out 0.05s; }
+        .sound-widget.active .eq-bar:nth-child(2) { animation: eqMove 0.45s infinite ease-in-out 0.20s; }
+        .sound-widget.active .eq-bar:nth-child(3) { animation: eqMove 0.65s infinite ease-in-out 0.10s; }
+        .sound-widget.active .eq-bar:nth-child(4) { animation: eqMove 0.50s infinite ease-in-out 0.30s; }
+        .sound-widget.active .eq-bar:nth-child(5) { animation: eqMove 0.60s infinite ease-in-out 0.15s; }
+        
+        @keyframes eqMove {
+            0%, 100% { height: 4px; opacity: 0.6; }
+            50% { height: 20px; opacity: 1; box-shadow: 0 0 6px var(--accent-light); }
         }
         .sound-info {
             display: flex; flex-direction: column; text-align: left;
         }
         .sound-title {
-            font-size: 0.7rem; font-weight: 700; color: var(--text-color);
+            font-size: 0.72rem; font-weight: 700; color: var(--text-color);
         }
         .sound-status {
-            font-size: 0.62rem; color: var(--accent-light); opacity: 0.85;
+            font-size: 0.64rem; color: var(--accent-light); opacity: 0.9;
         }
-        .sfx-toggle {
-            background: rgba(168, 85, 247, 0.15); border: 1px solid var(--border-color);
-            color: var(--text-color); font-size: 0.65rem; font-weight: 600;
-            padding: 4px 8px; border-radius: 12px; cursor: none;
-        }
-        .sfx-toggle.sfx-on {
-            background: rgba(168, 85, 247, 0.35); border-color: var(--accent-color);
-            color: #fff;
+
+        /* Hidden YouTube Audio Container */
+        .yt-hidden-player {
+            position: fixed; bottom: 0; left: 0;
+            width: 1px; height: 1px;
+            opacity: 0.01; pointer-events: none; z-index: -99;
+            overflow: hidden;
         }
 
         /* === MUSIC / CODE EASTER EGG FLOATING TERMINAL === */
         .code-easter-egg {
-            position: fixed; bottom: 82px; left: 25px; z-index: 998;
+            position: fixed; bottom: 84px; left: 25px; z-index: 998;
             width: 290px; background: rgba(10, 4, 16, 0.94);
             border: 1px solid var(--neon-border);
             border-radius: 12px; overflow: hidden;
@@ -777,11 +788,10 @@
 
             .social-btn { width: 100%; max-width: 320px; padding: 13px 24px; font-size: 0.98rem; }
 
-            /* Penyesuaian Floating Widgets di HP agar tidak menutupi layar */
+            /* Penyesuaian Floating Widgets di HP agar tetap punya Equalizer Bergerak namun rapi */
             .code-easter-egg { display: none; }
-            .sound-widget { bottom: 14px; left: 14px; padding: 5px 10px 5px 6px; gap: 7px; }
-            .sound-toggle-btn { width: 32px; height: 32px; font-size: 0.8rem; }
-            .sound-info { display: none; }
+            .sound-widget { bottom: 14px; left: 14px; padding: 6px 14px 6px 8px; gap: 10px; }
+            .sound-toggle-btn { width: 34px; height: 34px; font-size: 0.85rem; }
             .back-to-top { bottom: 14px; right: 14px; width: 40px; height: 40px; font-size: 1rem; }
 
             .modal-content { padding: 22px 18px; }
@@ -810,23 +820,27 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- === SOUND SYSTEM / AUDIO TOGGLE FLOATING WIDGET === -->
+    <!-- === SOUND SYSTEM / AUDIO TOGGLE DENGAN EQUALIZER BAR BERGERAK (MUSIK YOUTUBE) === -->
     <div class="sound-widget" id="soundWidget">
-        <button class="sound-toggle-btn" id="musicToggleBtn" aria-label="Putar Musik Background" title="Toggle Lo-Fi Audio">
+        <button class="sound-toggle-btn" id="musicToggleBtn" aria-label="Putar Musik Background" title="Putar / Jeda Musik">
             <i class="fas fa-play" id="musicIcon"></i>
         </button>
-        <div class="equalizer">
+        <div class="equalizer" aria-hidden="true">
+            <span class="eq-bar"></span>
+            <span class="eq-bar"></span>
             <span class="eq-bar"></span>
             <span class="eq-bar"></span>
             <span class="eq-bar"></span>
         </div>
         <div class="sound-info">
             <span class="sound-title" data-i18n="sound-title">Sound System</span>
-            <span class="sound-status" id="soundStatusText" data-i18n="sound-off">Lo-Fi Standby</span>
+            <span class="sound-status" id="soundStatusText" data-i18n="sound-off">Klik Play Musik</span>
         </div>
-        <button class="sfx-toggle sfx-on" id="sfxToggleBtn" title="Toggle Efek Suara UI">
-            SFX: ON
-        </button>
+    </div>
+
+    <!-- Pemutar Audio YouTube Tersembunyi (ID: dEIAdXGSChY) -->
+    <div class="yt-hidden-player">
+        <div id="ytAudioPlayer"></div>
     </div>
 
     <!-- === MUSIC / CODE EASTER EGG TERMINAL === -->
@@ -846,7 +860,7 @@
                 <span class="terminal-cmd">whoami</span>
             </div>
             <div class="terminal-line">
-                <span class="terminal-output">&gt; Abi Muhammad </span>
+                <span class="terminal-output">&gt; Abi Muhammad | SMAN 1 Pasir Sakti</span>
             </div>
             <div class="terminal-line">
                 <span class="terminal-prompt">$</span>
@@ -1185,6 +1199,7 @@
     <!-- Library Eksternal -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     
     <script>
         // === LOGIKA ANIMASI PENYAMBUT ===
@@ -1232,7 +1247,7 @@
                 "proj-play-badge": "Mainkan",
                 "modal-feat-heading": "Fitur Utama:", "modal-close-btn": "Tutup",
                 "contact-title": "Hubungi Saya", "contact-subtitle": "Mari terhubung melalui media sosial saya di bawah ini.",
-                "sound-title": "Sound System", "sound-off": "Lo-Fi Standby", "sound-on": "Playing Lo-Fi"
+                "sound-title": "Sound System", "sound-off": "Klik Play Musik", "sound-on": "Memutar Musik..."
             },
             "en": {
                 "nav-home": "Home", "nav-skills": "Skills", "nav-journey": "Education", "nav-portfolio": "Tasks", "nav-contact": "Contact",
@@ -1263,7 +1278,7 @@
                 "proj-play-badge": "Play Game",
                 "modal-feat-heading": "Key Features:", "modal-close-btn": "Close",
                 "contact-title": "Contact Me", "contact-subtitle": "Let's connect through my social media channels below.",
-                "sound-title": "Sound System", "sound-off": "Lo-Fi Standby", "sound-on": "Playing Lo-Fi"
+                "sound-title": "Sound System", "sound-off": "Click to Play", "sound-on": "Playing Music..."
             },
             "ar": {
                 "nav-home": "الرئيسية", "nav-skills": "المهارات", "nav-journey": "التعليم", "nav-portfolio": "المهام", "nav-contact": "اتصل",
@@ -1294,7 +1309,7 @@
                 "proj-play-badge": "العب الآن",
                 "modal-feat-heading": "الميزات الرئيسية:", "modal-close-btn": "إغلاق",
                 "contact-title": "اتصل بي", "contact-subtitle": "تواصل معي عبر حساباتي على وسائل التواصل الاجتماعي أدناه.",
-                "sound-title": "نظام الصوت", "sound-off": "وضع الاستعداد", "sound-on": "تشغيل موسيقى"
+                "sound-title": "نظام الصوت", "sound-off": "اضغط للتشغيل", "sound-on": "جاري التشغيل..."
             }
         };
 
@@ -1457,7 +1472,6 @@
         const langSlider = document.getElementById('langSlider');
         langBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                playUiSound('click');
                 langBtns.forEach(b => b.classList.remove('active')); 
                 btn.classList.add('active');
                 const idx = btn.getAttribute('data-idx'); 
@@ -1493,12 +1507,11 @@
 
         document.querySelectorAll('.project-card').forEach(card => {
             card.addEventListener('click', (e) => {
-                playUiSound('open');
                 const projId = card.getAttribute('data-project');
                 const projObj = projectDetailsData[projId];
                 const data = projObj[activeLanguage] || projObj['id'];
 
-                // Jika yang diklik langsung adalah badge "Buka Web" / "Mainkan", langsung buka tab baru
+                // Jika diklik pada tombol badge "Buka Web" / "Mainkan", langsung buka link di tab baru
                 if (e.target.closest('.card-visit-badge') && projObj.url) {
                     window.open(projObj.url, '_blank', 'noopener,noreferrer');
                     return;
@@ -1529,7 +1542,6 @@
         });
 
         function closeProjectModal() {
-            playUiSound('click');
             projectModal.classList.remove('active');
         }
         modalCloseBtn.addEventListener('click', closeProjectModal);
@@ -1543,96 +1555,67 @@
             }
         });
 
-        // === SISTEM AUDIO WEB API (LO-FI SYNTH + UI SFX) ===
-        let audioCtx = null;
+        // === SISTEM MUSIK YOUTUBE (VIDEO ID: dEIAdXGSChY) + EQUALIZER BAR BERGERAK ===
+        let ytPlayer = null;
+        let isYtReady = false;
         let isMusicPlaying = false;
-        let isSfxEnabled = true;
-        let loFiInterval = null;
+        let pendingPlayRequest = false;
 
         const soundWidget = document.getElementById('soundWidget');
         const musicToggleBtn = document.getElementById('musicToggleBtn');
         const musicIcon = document.getElementById('musicIcon');
         const soundStatusText = document.getElementById('soundStatusText');
-        const sfxToggleBtn = document.getElementById('sfxToggleBtn');
 
-        function initAudioContext() {
-            if (!audioCtx) {
-                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContextClass();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function playUiSound(type = 'hover') {
-            if (!isSfxEnabled) return;
-            try {
-                initAudioContext();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                const now = audioCtx.currentTime;
-                if (type === 'hover') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(680, now);
-                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.04);
-                    gain.gain.setValueAtTime(0.02, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-                    osc.start(now);
-                    osc.stop(now + 0.045);
-                } else if (type === 'click') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(500, now);
-                    osc.frequency.exponentialRampToValueAtTime(250, now + 0.07);
-                    gain.gain.setValueAtTime(0.05, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
-                    osc.start(now);
-                    osc.stop(now + 0.075);
-                } else if (type === 'open') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.exponentialRampToValueAtTime(820, now + 0.12);
-                    gain.gain.setValueAtTime(0.05, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
-                    osc.start(now);
-                    osc.stop(now + 0.14);
+        // Callback otomatis dari YouTube IFrame API
+        window.onYouTubeIframeAPIReady = function() {
+            ytPlayer = new YT.Player('ytAudioPlayer', {
+                height: '1',
+                width: '1',
+                videoId: 'dEIAdXGSChY',
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': 'dEIAdXGSChY',
+                    'playsinline': 1,
+                    'rel': 0
+                },
+                events: {
+                    'onReady': (event) => {
+                        isYtReady = true;
+                        event.target.setVolume(80);
+                        if (pendingPlayRequest) {
+                            pendingPlayRequest = false;
+                            event.target.playVideo();
+                        }
+                    },
+                    'onStateChange': (event) => {
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            setMusicUiState(true);
+                        } else if (event.data === YT.PlayerState.PAUSED) {
+                            setMusicUiState(false);
+                        } else if (event.data === YT.PlayerState.ENDED) {
+                            ytPlayer.playVideo();
+                        }
+                    }
                 }
-            } catch (err) {}
-        }
-
-        const loFiChords = [
-            [220.00, 261.63, 329.63],
-            [174.61, 220.00, 261.63],
-            [261.63, 329.63, 392.00],
-            [196.00, 246.94, 293.66]
-        ];
-        let chordIndex = 0;
-
-        function playLoFiChord() {
-            if (!isMusicPlaying) return;
-            initAudioContext();
-            const now = audioCtx.currentTime;
-            const chord = loFiChords[chordIndex % loFiChords.length];
-            chordIndex++;
-
-            chord.forEach((freq, idx) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-                osc.frequency.setValueAtTime(freq, now);
-
-                gain.gain.setValueAtTime(0.001, now);
-                gain.gain.linearRampToValueAtTime(0.02, now + 0.5);
-                gain.gain.exponentialRampToValueAtTime(0.0008, now + 2.6);
-
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(now);
-                osc.stop(now + 2.7);
             });
+        };
+
+        function setMusicUiState(playing) {
+            isMusicPlaying = playing;
+            if (playing) {
+                musicToggleBtn.classList.add('playing');
+                soundWidget.classList.add('active');
+                musicIcon.classList.remove('fa-play');
+                musicIcon.classList.add('fa-pause');
+            } else {
+                musicToggleBtn.classList.remove('playing');
+                soundWidget.classList.remove('active');
+                musicIcon.classList.remove('fa-pause');
+                musicIcon.classList.add('fa-play');
+            }
+            updateSoundStatusLabel();
         }
 
         function updateSoundStatusLabel() {
@@ -1641,30 +1624,18 @@
         }
 
         musicToggleBtn.addEventListener('click', () => {
-            initAudioContext();
-            isMusicPlaying = !isMusicPlaying;
-            if (isMusicPlaying) {
-                musicToggleBtn.classList.add('playing');
-                soundWidget.classList.add('active');
-                musicIcon.classList.remove('fa-play');
-                musicIcon.classList.add('fa-pause');
-                playLoFiChord();
-                loFiInterval = setInterval(playLoFiChord, 2800);
-            } else {
-                musicToggleBtn.classList.remove('playing');
-                soundWidget.classList.remove('active');
-                musicIcon.classList.remove('fa-pause');
-                musicIcon.classList.add('fa-play');
-                clearInterval(loFiInterval);
+            if (!isYtReady || !ytPlayer) {
+                pendingPlayRequest = !pendingPlayRequest;
+                setMusicUiState(pendingPlayRequest);
+                return;
             }
-            updateSoundStatusLabel();
-        });
-
-        sfxToggleBtn.addEventListener('click', () => {
-            isSfxEnabled = !isSfxEnabled;
-            sfxToggleBtn.textContent = isSfxEnabled ? 'SFX: ON' : 'SFX: OFF';
-            sfxToggleBtn.classList.toggle('sfx-on', isSfxEnabled);
-            if (isSfxEnabled) playUiSound('click');
+            if (isMusicPlaying) {
+                ytPlayer.pauseVideo();
+                setMusicUiState(false);
+            } else {
+                ytPlayer.playVideo();
+                setMusicUiState(true);
+            }
         });
 
         // === LOGIKA TERMINAL CODE EASTER EGG ===
@@ -1675,7 +1646,6 @@
         const liveTerminalOut = document.getElementById('liveTerminalOut');
 
         terminalHeader.addEventListener('click', () => {
-            playUiSound('click');
             codeTerminal.classList.toggle('minimized');
             if (codeTerminal.classList.contains('minimized')) {
                 terminalToggleIcon.classList.remove('fa-chevron-down');
@@ -1747,7 +1717,6 @@
         }, { passive: true });
 
         backToTopBtn.addEventListener('click', () => {
-            playUiSound('click');
             window.scrollTo({top: 0, behavior: 'smooth'});
         });
 
@@ -1834,7 +1803,6 @@
             document.querySelectorAll('a, button, .card, .skill-img-card, .profile-img, .timeline-content, .terminal-header').forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     document.body.classList.add('cursor-hover');
-                    playUiSound('hover');
                 });
                 el.addEventListener('mouseleave', () => {
                     document.body.classList.remove('cursor-hover');
@@ -1847,7 +1815,6 @@
         const themeIcon = themeBtn.querySelector('i');
         
         themeBtn.addEventListener('click', () => {
-            playUiSound('click');
             document.body.classList.toggle('light-mode');
             if(document.body.classList.contains('light-mode')) {
                 themeIcon.classList.remove('fa-moon');
