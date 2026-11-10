@@ -51,7 +51,7 @@
             transition: background-color 0.4s ease, color 0.4s ease;
         }
         
-        /* Mengunci scroll saat animasi welcome berjalan */
+        /* Mengunci scroll hanya saat awal animasi welcome */
         body.loading { overflow: hidden; }
 
         /* === DUKUNGAN MULTI-BAHASA & RTL (ARAB) === */
@@ -67,16 +67,30 @@
         body[dir="rtl"] .tech-stack-tags,
         body[dir="rtl"] .modal-tags { flex-direction: row-reverse; }
 
-        /* === ANIMASI PENYAMBUT (WELCOME SCREEN) === */
+        /* === ANIMASI PENYAMBUT (ANTI-MACET / AUTO-HIDE HARDWARE ACCELERATED) === */
         .welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
             background-color: #050208;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 999999;
-            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+            will-change: transform, opacity;
+            transition: transform 0.65s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.65s ease, visibility 0.65s;
+            /* Fallback CSS murni agar tidak pernah macet meskipun jaringan lambat */
+            animation: welcomeAutoExit 0.65s cubic-bezier(0.77, 0, 0.175, 1) forwards 2.5s;
         }
-        .welcome-screen.hide { transform: translateY(-100%); }
+        .welcome-screen.hide { 
+            transform: translate3d(0, -100%, 0); 
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none; 
+        }
         
+        @keyframes welcomeAutoExit {
+            0% { transform: translate3d(0, 0, 0); opacity: 1; visibility: visible; }
+            99% { transform: translate3d(0, -100%, 0); opacity: 0; visibility: visible; }
+            100% { transform: translate3d(0, -100%, 0); opacity: 0; visibility: hidden; pointer-events: none; }
+        }
+
         .welcome-text-container {
             display: flex; flex-direction: column; align-items: center; text-transform: uppercase;
             padding: 0 15px; text-align: center;
@@ -84,18 +98,18 @@
         
         .welcome-text {
             font-size: 1.15rem; font-weight: 300; letter-spacing: 6px; color: var(--accent-light);
-            opacity: 0; transform: translateY(20px);
-            animation: textReveal 0.8s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+            opacity: 0; transform: translate3d(0, 18px, 0);
+            animation: textReveal 0.6s ease-out forwards;
         }
-        .welcome-text:nth-child(1) { animation-delay: 0.3s; }
-        .welcome-text:nth-child(3) { animation-delay: 0.7s; }
+        .welcome-text:nth-child(1) { animation-delay: 0.15s; }
+        .welcome-text:nth-child(3) { animation-delay: 0.45s; }
 
         .welcome-highlight {
             font-size: 4.8rem; font-weight: 800; letter-spacing: 8px; margin: 10px 0;
             color: transparent;
-            -webkit-text-stroke: 2px rgba(168, 85, 247, 0.5);
-            position: relative; opacity: 0; transform: scale(0.9);
-            animation: highlightReveal 1s cubic-bezier(0.77, 0, 0.175, 1) forwards 0.5s;
+            -webkit-text-stroke: 2px rgba(168, 85, 247, 0.55);
+            position: relative; opacity: 0; transform: scale(0.94);
+            animation: highlightReveal 0.65s ease-out forwards 0.25s;
         }
         
         .welcome-highlight::before {
@@ -103,10 +117,10 @@
             width: 0; height: 100%; color: var(--accent-color);
             -webkit-text-stroke: 0px transparent; overflow: hidden;
             border-right: 4px solid #fff;
-            animation: fillText 1.2s cubic-bezier(0.77, 0, 0.175, 1) forwards 1.3s;
+            animation: fillText 1s ease-in-out forwards 0.8s;
         }
 
-        @keyframes textReveal { to { opacity: 1; transform: translateY(0); } }
+        @keyframes textReveal { to { opacity: 1; transform: translate3d(0, 0, 0); } }
         @keyframes highlightReveal { to { opacity: 1; transform: scale(1); } }
         @keyframes fillText { 
             0% { width: 0; border-right-color: #fff; }
@@ -188,14 +202,6 @@
         }
         .sound-status {
             font-size: 0.64rem; color: var(--accent-light); opacity: 0.9;
-        }
-
-        /* Hidden YouTube Audio Container */
-        .yt-hidden-player {
-            position: fixed; bottom: 0; left: 0;
-            width: 1px; height: 1px;
-            opacity: 0.01; pointer-events: none; z-index: -99;
-            overflow: hidden;
         }
 
         /* === MUSIC / CODE EASTER EGG FLOATING TERMINAL === */
@@ -803,7 +809,7 @@
 </head>
 <body class="loading">
     
-    <!-- === 1. LAYAR PENYAMBUT (WELCOME SCREEN) === -->
+    <!-- === 1. LAYAR PENYAMBUT (WELCOME SCREEN LANCAR & ANTI-MACET) === -->
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-text-container">
             <span class="welcome-text">WELCOME TO MY</span>
@@ -820,7 +826,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- === SOUND SYSTEM / AUDIO TOGGLE DENGAN EQUALIZER BAR BERGERAK (MUSIK YOUTUBE) === -->
+    <!-- === SOUND SYSTEM / AUDIO TOGGLE DENGAN EQUALIZER BAR BERGERAK (JUMPSHARE AUDIO) === -->
     <div class="sound-widget" id="soundWidget">
         <button class="sound-toggle-btn" id="musicToggleBtn" aria-label="Putar Musik Background" title="Putar / Jeda Musik">
             <i class="fas fa-play" id="musicIcon"></i>
@@ -838,10 +844,11 @@
         </div>
     </div>
 
-    <!-- Pemutar Audio YouTube Tersembunyi (ID: dEIAdXGSChY) -->
-    <div class="yt-hidden-player">
-        <div id="ytAudioPlayer"></div>
-    </div>
+    <!-- Elemen Audio dari Link Jumpshare (preload="none" agar tidak memberatkan loading awal web) -->
+    <audio id="bgAudio" loop preload="none">
+        <source src="https://cdn.jumpshare.com/preview/pKYnFrudNXH6799yBrHd1rvFKsOaLd3fMd6vhleCDA14cYPOUyW4Tnr1-_Fhm88Z8PncMJZQcYnEizMY6udnc7k1Xj8E-ClrVhjcL24OEio8a-5G7q7bc2uFYM68tPACJcxKuno97bb8dl4k2sqI4G6yjbN-I2pg_cnoHs_AmgI-4h3unfsVFOq8J.mp3" type="audio/mpeg">
+        <source src="https://cdn.jumpshare.com/download/A2L5P8QyQxc673PWS8L6cbydasVBtAXY1x7EEpmS1a8u1oBZDZp9MUmnuTph1ws7B1-Vx7T-zr0uYvwq1Z2HWab5RW6_a-qVqU5Z46JHJVg" type="audio/mpeg">
+    </audio>
 
     <!-- === MUSIC / CODE EASTER EGG TERMINAL === -->
     <div class="code-easter-egg minimized" id="codeTerminal">
@@ -1199,21 +1206,38 @@
     <!-- Library Eksternal -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-    <script src="https://www.youtube.com/iframe_api"></script>
     
     <script>
-        // === LOGIKA ANIMASI PENYAMBUT ===
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const welcomeScreen = document.getElementById('welcomeScreen');
-                welcomeScreen.classList.add('hide'); 
-                
+        // === LOGIKA ANIMASI PENYAMBUT (DIJAMIN LANCAR & TIDAK MENUNGGU RESOURCE EKSTERNAL) ===
+        (function initWelcomeScreen() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            let isHidden = false;
+
+            function finishWelcome() {
+                if (isHidden) return;
+                isHidden = true;
+                if (welcomeScreen) {
+                    welcomeScreen.classList.add('hide');
+                }
+                document.body.classList.remove('loading');
                 setTimeout(() => {
-                    document.body.classList.remove('loading');
-                }, 800); 
-                
-            }, 3200); 
-        });
+                    if (welcomeScreen) welcomeScreen.style.display = 'none';
+                }, 700);
+            }
+
+            // Langsung jalankan timer 2.4 detik begitu DOM siap (tanpa menunggu gambar/audio luar selesai)
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => setTimeout(finishWelcome, 2400));
+            } else {
+                setTimeout(finishWelcome, 2400);
+            }
+
+            // Fallback pengaman ekstra & bisa diklik untuk langsung masuk
+            setTimeout(finishWelcome, 2800);
+            if (welcomeScreen) {
+                welcomeScreen.addEventListener('click', finishWelcome);
+            }
+        })();
 
         // === KAMUS BAHASA LENGKAP (ID, EN, AR) ===
         let activeLanguage = "id";
@@ -1511,7 +1535,6 @@
                 const projObj = projectDetailsData[projId];
                 const data = projObj[activeLanguage] || projObj['id'];
 
-                // Jika diklik pada tombol badge "Buka Web" / "Mainkan", langsung buka link di tab baru
                 if (e.target.closest('.card-visit-badge') && projObj.url) {
                     window.open(projObj.url, '_blank', 'noopener,noreferrer');
                     return;
@@ -1555,52 +1578,17 @@
             }
         });
 
-        // === SISTEM MUSIK YOUTUBE (VIDEO ID: dEIAdXGSChY) + EQUALIZER BAR BERGERAK ===
-        let ytPlayer = null;
-        let isYtReady = false;
-        let isMusicPlaying = false;
-        let pendingPlayRequest = false;
-
+        // === SISTEM AUDIO JUMPSHARE + EQUALIZER BAR BERGERAK ===
+        const bgAudio = document.getElementById('bgAudio');
         const soundWidget = document.getElementById('soundWidget');
         const musicToggleBtn = document.getElementById('musicToggleBtn');
         const musicIcon = document.getElementById('musicIcon');
         const soundStatusText = document.getElementById('soundStatusText');
+        let isMusicPlaying = false;
 
-        // Callback otomatis dari YouTube IFrame API
-        window.onYouTubeIframeAPIReady = function() {
-            ytPlayer = new YT.Player('ytAudioPlayer', {
-                height: '1',
-                width: '1',
-                videoId: 'dEIAdXGSChY',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'loop': 1,
-                    'playlist': 'dEIAdXGSChY',
-                    'playsinline': 1,
-                    'rel': 0
-                },
-                events: {
-                    'onReady': (event) => {
-                        isYtReady = true;
-                        event.target.setVolume(80);
-                        if (pendingPlayRequest) {
-                            pendingPlayRequest = false;
-                            event.target.playVideo();
-                        }
-                    },
-                    'onStateChange': (event) => {
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            setMusicUiState(true);
-                        } else if (event.data === YT.PlayerState.PAUSED) {
-                            setMusicUiState(false);
-                        } else if (event.data === YT.PlayerState.ENDED) {
-                            ytPlayer.playVideo();
-                        }
-                    }
-                }
-            });
-        };
+        if (bgAudio) {
+            bgAudio.volume = 0.8;
+        }
 
         function setMusicUiState(playing) {
             isMusicPlaying = playing;
@@ -1624,19 +1612,23 @@
         }
 
         musicToggleBtn.addEventListener('click', () => {
-            if (!isYtReady || !ytPlayer) {
-                pendingPlayRequest = !pendingPlayRequest;
-                setMusicUiState(pendingPlayRequest);
-                return;
-            }
-            if (isMusicPlaying) {
-                ytPlayer.pauseVideo();
-                setMusicUiState(false);
+            if (!bgAudio) return;
+            if (bgAudio.paused) {
+                bgAudio.play().then(() => {
+                    setMusicUiState(true);
+                }).catch(() => {
+                    setMusicUiState(false);
+                });
             } else {
-                ytPlayer.playVideo();
-                setMusicUiState(true);
+                bgAudio.pause();
+                setMusicUiState(false);
             }
         });
+
+        if (bgAudio) {
+            bgAudio.addEventListener('play', () => setMusicUiState(true));
+            bgAudio.addEventListener('pause', () => setMusicUiState(false));
+        }
 
         // === LOGIKA TERMINAL CODE EASTER EGG ===
         const codeTerminal = document.getElementById('codeTerminal');
@@ -1742,30 +1734,32 @@
         typeEffect();
 
         // === PARTIKEL BACKGROUND RINGAN & HEMAT BATERAI/GPU ===
-        const particleCount = window.innerWidth > 768 ? 28 : 12;
-        particlesJS('particles-js', {
-            "particles": {
-                "number": { "value": particleCount, "density": { "enable": true, "value_area": 900 } },
-                "color": { "value": "#a855f7" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.25, "random": false },
-                "size": { "value": 2.5, "random": true },
-                "line_linked": { "enable": true, "distance": 140, "color": "#a855f7", "opacity": 0.18, "width": 1 },
-                "move": { "enable": true, "speed": 0.8, "direction": "none", "random": false, "straight": false, "out_mode": "out" }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": { "enable": isDesktop, "mode": "grab" },
-                    "onclick": { "enable": false },
-                    "resize": true
+        if (window.particlesJS) {
+            const particleCount = window.innerWidth > 768 ? 28 : 12;
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": { "value": particleCount, "density": { "enable": true, "value_area": 900 } },
+                    "color": { "value": "#a855f7" },
+                    "shape": { "type": "circle" },
+                    "opacity": { "value": 0.25, "random": false },
+                    "size": { "value": 2.5, "random": true },
+                    "line_linked": { "enable": true, "distance": 140, "color": "#a855f7", "opacity": 0.18, "width": 1 },
+                    "move": { "enable": true, "speed": 0.8, "direction": "none", "random": false, "straight": false, "out_mode": "out" }
                 },
-                "modes": {
-                    "grab": { "distance": 140, "line_linked": { "opacity": 0.4 } }
-                }
-            },
-            "retina_detect": false
-        });
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": { "enable": isDesktop, "mode": "grab" },
+                        "onclick": { "enable": false },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": { "distance": 140, "line_linked": { "opacity": 0.4 } }
+                    }
+                },
+                "retina_detect": false
+            });
+        }
 
         // Matikan Vanilla-Tilt di perangkat layar sentuh/HP agar tidak berat
         if (!isDesktop && window.VanillaTilt) {
